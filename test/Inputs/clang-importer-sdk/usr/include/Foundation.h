@@ -1143,3 +1143,11 @@ void install_global_event_handler(__nullable event_handler handler);
          forKeyPath: (NSString*) keyPath
          context: (void*) options;
 @end
+
+@protocol DefaultArgProtocol
+- (void) runceWithOptions:(NSRuncingOptions)options;
+
+@optional
+- (void) runceTwiceWithOptions:(NSRuncingOptions)options;
+
+@end
