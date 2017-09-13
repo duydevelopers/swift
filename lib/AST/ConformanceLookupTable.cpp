@@ -850,6 +850,7 @@ ProtocolConformance *ConformanceLookupTable::getConformance(
           // the attribute.
           cast<NormalProtocolConformance>(conformance)
               ->setLazyLoader(attr->getLazyLoader(), /*context=*/0);
+              assert(false);
           break;
         }
       }
