@@ -837,6 +837,12 @@ ProtocolConformance *ConformanceLookupTable::getConformance(
     while (impliedEntry->getKind() == ConformanceEntryKind::Implied)
       impliedEntry = impliedEntry->Source.getImpliedSource();
 
+    if (conformingNominal->getName() == ctx.getIdentifier("__swift_stdlib_UErrorCode")) {
+      protocol->dumpRef();
+      llvm::errs() << "\n";
+      llvm::errs() << "=== " << unsigned(impliedEntry->getKind()) << "\n";
+      llvm::errs() << "=== " << unsigned(entry->getKind()) << "\n";
+    }
     // Check if this was a synthesized conformance.
     if (impliedEntry->getKind() == ConformanceEntryKind::Synthesized) {
       auto *impliedProto = impliedEntry->getProtocol();

@@ -1225,7 +1225,7 @@ populateInheritedTypes(ClangImporter::Implementation &Impl,
   for (auto protoKind : synthesizedProtocolAttrs) {
     if (auto *protoDecl = Impl.SwiftContext.getProtocol(protoKind)) {
       auto protoType = protoDecl->getDeclaredType();
-      inheritedTypes.push_back(TypeLoc::withoutLoc(protoType));
+      //inheritedTypes.push_back(TypeLoc::withoutLoc(protoType));
     }
   }
 
@@ -2544,14 +2544,18 @@ namespace {
 
         // Add protocol declarations to the enum declaration.
         SmallVector<TypeLoc, 2> inheritedTypes;
-        inheritedTypes.push_back(TypeLoc::withoutLoc(underlyingType));
+        //inheritedTypes.push_back(TypeLoc::withoutLoc(underlyingType));
         if (errorWrapper) {
-          inheritedTypes.push_back(
-            TypeLoc::withoutLoc(errorCodeProto->getDeclaredType()));
+          //inheritedTypes.push_back(
+          //  TypeLoc::withoutLoc(errorCodeProto->getDeclaredType()));
 
           enumDecl->getAttrs().add(new (Impl.SwiftContext)
                   SynthesizedProtocolAttr(KnownProtocolKind::ErrorCodeProtocol,
                                           &Impl));
+        } else {
+          enumDecl->getAttrs().add(new (Impl.SwiftContext)
+          SynthesizedProtocolAttr(KnownProtocolKind::RawRepresentable,
+                                  &Impl));
         }
         enumDecl->setInherited(C.AllocateCopy(inheritedTypes));
         enumDecl->setCheckedInheritanceClause();
