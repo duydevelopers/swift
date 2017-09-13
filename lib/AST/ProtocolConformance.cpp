@@ -399,6 +399,7 @@ NormalProtocolConformance::getTypeWitnessAndDecl(AssociatedTypeDecl *assocType,
 void NormalProtocolConformance::setTypeWitness(AssociatedTypeDecl *assocType,
                                                Type type,
                                                TypeDecl *typeDecl) const {
+  assert(!type->hasArchetype() && "expected interface type here");
   assert(getProtocol() == cast<ProtocolDecl>(assocType->getDeclContext()) &&
          "associated type in wrong protocol");
   assert(TypeWitnesses.count(assocType) == 0 && "Type witness already known");

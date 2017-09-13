@@ -7352,8 +7352,7 @@ static void finishTypeWitnesses(
         if (!memberType) continue;
 
         conformance->setTypeWitness(assocType,
-                                    nominal->mapTypeIntoContext(
-                                      memberType->getDeclaredInterfaceType()),
+                                    memberType->getDeclaredInterfaceType(),
                                     memberType);
         satisfied = true;
         break;
