@@ -4860,9 +4860,7 @@ checkExtensionGenericParams(TypeChecker &tc, ExtensionDecl *ext, Type type,
                                          ext, inferExtendedTypeReqs,
                                          mustInferRequirements);
 
-  Type extContextType =
-    env->mapTypeIntoContext(extInterfaceType);
-  return { env, extContextType };
+  return { env, extInterfaceType };
 }
 
 void TypeChecker::validateExtension(ExtensionDecl *ext) {

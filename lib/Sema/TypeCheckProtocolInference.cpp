@@ -187,7 +187,7 @@ AssociatedTypeInference::inferTypeWitnessesViaValueWitnesses(
 
     // Assume unconstrained concrete extensions we found witnesses in are
     // always viable.
-    if (!extension->getExtendedType()->isAnyExistentialType()) {
+    if (!isa<ProtocolDecl>(extension->getExtendedNominal())) {
       // TODO: When constrained extensions are a thing, we'll need an "is
       // as specialized as" kind of check here.
       return !extension->isConstrainedExtension();
