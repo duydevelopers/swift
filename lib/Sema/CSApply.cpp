@@ -5524,11 +5524,8 @@ Expr *ExprRewriter::coerceCallArguments(
 
   bool matchCanFail =
       llvm::any_of(params, [](const AnyFunctionType::Param &param) {
-        return param.getType()->hasUnresolvedType();
+        return param.getPlainType()->hasUnresolvedType();
       });
-
-  auto paramType = AnyFunctionType::composeInput(tc.Context, params, false);
-  bool allParamsMatch = cs.getType(arg)->isEqual(paramType);
 
   // Find the callee declaration.
   ConcreteDeclRef callee =
@@ -5540,12 +5537,17 @@ Expr *ExprRewriter::coerceCallArguments(
   // Determine the parameter bindings.
   llvm::SmallBitVector defaultMap
     = computeDefaultMap(params, callee.getDecl(), level);
-  auto args = decomposeArgType(cs.getType(arg), argLabels);
+
+  SmallVector<AnyFunctionType::Param, 8> args;
+  AnyFunctionType::decomposeInput(cs.getType(arg), args);
 
   // Quickly test if any further fix-ups for the argument types are necessary.
-  if (allParamsMatch)
+  if (AnyFunctionType::equalParams(params, args))
     return arg;
-  
+
+  // Apply labels to arguments.
+  AnyFunctionType::relabelParams(args, argLabels);
+
   MatchCallArgumentListener listener;
   SmallVector<ParamBinding, 4> parameterBindings;
   bool failed = constraints::matchCallArguments(args, params,
@@ -5763,9 +5765,13 @@ Expr *ExprRewriter::coerceCallArguments(
   }
 
   // If we don't have to shuffle anything, we're done.
-  paramType = AnyFunctionType::composeInput(tc.Context, params, false);
-  if (cs.getType(arg)->isEqual(paramType))
+  args.clear();
+  AnyFunctionType::decomposeInput(cs.getType(arg), args);
+  if (AnyFunctionType::equalParams(args, params))
     return arg;
+
+  auto paramType = AnyFunctionType::composeInput(tc.Context, params,
+                                                 /*canonicalVararg=*/false);
 
   // If we came from a scalar, create a scalar-to-tuple conversion.
   TupleShuffleExpr::TypeImpact typeImpact;
